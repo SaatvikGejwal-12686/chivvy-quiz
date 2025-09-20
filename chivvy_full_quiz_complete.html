@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chivvy Quiz – Full Flipcards</title>
+<style>
+  body { background-color: black; color: #39ff14; font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+  h1 { color: #39ff14; }
+  .flip-card { background-color: black; color: #39ff14; width: 90%; max-width: 800px; min-height: 150px; border: 2px solid #39ff14; margin: 15px; perspective: 1000px; cursor: pointer; }
+  .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: left; transition: transform 0.6s; transform-style: preserve-3d; padding: 10px; box-sizing: border-box; }
+  .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+  .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; font-size: 16px; padding: 10px; box-sizing: border-box; }
+  .flip-card-back { transform: rotateY(180deg); color: #39ff14; }
+  button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #39ff14; color: black; border: none; border-radius: 5px; }
+  #progress { margin-top: 20px; color: #39ff14; }
+</style>
+</head>
+<body>
+<h1>Chivvy Quiz – Flipcards</h1>
+<div id="quiz-container"></div>
+<div id="progress"></div>
+<button id="next-btn">Next Question</button>
+<button id="restart-btn" style="display:none;">Restart Quiz</button>
+<script>
+const quizData = [
+  {question: "Q1. The last two lines of the poem are not prohibitions or instructions. What is the adult now asking the child to do? Do you think the poet is suggesting that this is unreasonable?", answer: "In the last two lines, the adults are asking the child to think himself and to be independent in taking decisions which is unreasonable because they themselves don’t allow the child to take any decision. They always tell him what to do or what not to do. So, their asking the child to make up his own mind is surely unreasonable."},
+  {question: "Q2. Why do you think grown-ups say the kind of things mentioned in the poem? Is it important that they teach children good manners, and how to behave in public?", answer: "The grown-ups say such kind of things to their children in order to teach them good manners, etiquettes and how to behave in public. It is important to teach the children all these things so that they learn good manners and how to behave in the society, at home and with their elders and youngsters. Our elders are our guide and friends."},
+  {question: "Q3. If you had to make some rules for grown-ups to follow, what would you say? Make at least five such rules.", answer: "Don’t stop us from playing, Don’t ask us to study, Allow us to watch T.V., Take us for outings, Above all, Don’t Chivvy."},
+  {question: "MCQ1: What is the main theme of the poem 'Chivvy'?", answer: "b) The endless instructions given by adults to children"},
+  {question: "MCQ2: Which of the following instructions is NOT mentioned in the poem 'Chivvy'?", answer: "c) Eat your vegetables"},
+  {question: "MCQ3: The tone of the poem 'Chivvy' can best be described as:", answer: "b) Humorous and playful"},
+  {question: "MCQ4: The repeated use of short, direct commands in the poem is meant to:", answer: "b) Reflect the overwhelming nature of constant instructions"},
+  {question: "MCQ5: The phrase 'Act your age' in the poem suggests that adults often want children to:", answer: "a) Behave more responsibly"},
+  {question: "Short Answer 1: What does the word 'chivvy' mean in the context of the poem?", answer: "In the context of the poem, 'chivvy' refers to the act of nagging or constantly giving instructions to someone, especially to children, to correct their behavior."},
+  {question: "Short Answer 2: Why do you think the poet chose to list the instructions in the poem?", answer: "The poet lists the instructions to emphasize the overwhelming number of commands that children often receive from adults. This repetitive structure mimics the constant nagging children experience."},
+  {question: "Extract 1: 'Pull your socks up, Stand up straight, Say 'Thank you', Don’t interrupt'. Q1: What do these lines suggest about the expectations adults have from children?", answer: "These lines suggest that adults expect children to be well-behaved, polite, and presentable. They want children to follow social norms and etiquette."},
+  {question: "Extract 1 Q2: Why might the command 'Don’t interrupt' be particularly important to adults?", answer: "It teaches children to listen patiently and respect others when they are speaking."},
+  {question: "Extract 2: 'Take your hands out of your pockets, Pull your trousers up, Act your age, Stop slouching'. Q1: What behavior are adults trying to correct?", answer: "Adults are trying to correct behaviors perceived as lazy, sloppy, or immature. They want children to appear disciplined and responsible."},
+  {question: "Extract 2 Q2: How does the phrase 'Act your age' reflect adult expectations?", answer: "It reflects the expectation that children should behave in a manner appropriate for their age, implying more responsibility and maturity."},
+  {question: "Extract 3: 'Less noise, Shut the door behind you, Don’t drag your feet, Haven’t you got a hankie?'. Q1: What do these instructions reveal?", answer: "Adults value orderliness, cleanliness, and consideration for others."},
+  {question: "Extract 3 Q2: The question 'Haven’t you got a hankie?' implies a concern for what?", answer: "It implies a concern for hygiene and proper manners."},
+  {question: "Extract 4: 'Sit up, Say 'Please', Less noise, Can’t you make your own mind up about anything?'. Q1: What contrast is evident?", answer: "The final line contrasts with the preceding instructions, highlighting the irony of expecting independence while constantly giving orders."},
+  {question: "Extract 4 Q2: How does the poet use irony in this extract?", answer: "By juxtaposing the adults' demand for independence with continuous commands, leaving little room for the child to think for themselves."},
+  {question: "Critical Thinking 1: Do you think the instructions given in the poem are justified? Why or why not?", answer: "Some might argue they help teach proper behavior, while others may see them as overbearing and stifling individuality."},
+  {question: "Critical Thinking 2: How does the poem reflect the generational gap?", answer: "It shows how adults impose their values and expectations on children, often not considering the child's perspective."},
+  {question: "Critical Thinking 3: How might constant 'chivvying' affect a child's development?", answer: "It could impact self-esteem, confidence, and creativity, though it may also instill discipline."},
+  {question: "Creative Writing 1: Write a diary entry from a child constantly nagged.", answer: "Example: Today, I was told what to do every minute. I felt frustrated but tried to imagine myself free..."},
+  {question: "Creative Writing 2: Write a dialogue between a child and adult.", answer: "Child: I wish you’d let me decide sometimes. Adult: I just want you to learn manners. They discuss and reach understanding..."}
+];
+
+let currentIndex = 0;
+const quizContainer = document.getElementById('quiz-container');
+const progressDiv = document.getElementById('progress');
+const nextBtn = document.getElementById('next-btn');
+const restartBtn = document.getElementById('restart-btn');
+
+function showCard(data){
+  quizContainer.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'flip-card';
+  card.innerHTML = `<div class='flip-card-inner'><div class='flip-card-front'>${data.question}</div><div class='flip-card-back'>${data.answer}</div></div>`;
+  card.addEventListener('click
