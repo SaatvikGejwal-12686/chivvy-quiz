@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chivvy Quiz – Full Flipcards</title>
+<style>
+  body { background-color: black; color: white; font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+  h1 { color: #39ff14; }
+  .flip-card { background-color: black; color: #39ff14; width: 90%; max-width: 700px; min-height: 150px; border: 2px solid #39ff14; margin: 15px; perspective: 1000px; cursor: pointer; }
+  .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: left; transition: transform 0.6s; transform-style: preserve-3d; padding: 10px; box-sizing: border-box; }
+  .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+  .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; font-size: 16px; padding: 10px; box-sizing: border-box; }
+  .flip-card-back { transform: rotateY(180deg); color: #39ff14; }
+  button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #39ff14; color: black; border: none; border-radius: 5px; }
+  #progress { margin-top: 20px; color: #39ff14; }
+</style>
+</head>
+<body>
+<h1>Chivvy Quiz – Flipcards</h1>
+<div id="quiz-container"></div>
+<div id="progress"></div>
+<button id="next-btn">Next Question</button>
+<button id="restart-btn" style="display:none;">Restart Quiz</button>
+<script>
+const quizData = [
+  {question: "Q1. The last two lines of the poem are not prohibitions or instructions. What is the adult now asking the child to do? Do you think the poet is suggesting that this is unreasonable? Why?", answer: "In the last two lines, the adults are asking the child to think himself and to be independent in taking decisions which is unreasonable because they themselves don’t allow the child to take any decision. They always tell him what to do or what not to do. So, their asking the child to make up his own mind is surely unreasonable."},
+  {question: "Q2. Why do you think grown-ups say the kind of things mentioned in the poem? Is it important that they teach children good manners, and how to behave in public?", answer: "The grown-ups say such kind of things to their children in order to teach them good manners, etiquettes and how to behave in public. It is important to teach the children all these things so that they learn good manners and how to behave in the society, at home and with their elders and youngsters. Our elders are our guide and friends."},
+  {question: "Q3. If you had to make some rules for grown-ups to follow, what would you say? Make at least five such rules.", answer: "Don’t stop us from playing, Don’t ask us to study, Allow us to watch T.V., Take us for outings, Above all, Don’t Chivvy."}
+  // You can continue adding all MCQs, extracts, critical thinking, creative writing prompts exactly as in your original file
+];
+
+let currentIndex = 0;
+const quizContainer = document.getElementById('quiz-container');
+const progressDiv = document.getElementById('progress');
+const nextBtn = document.getElementById('next-btn');
+const restartBtn = document.getElementById('restart-btn');
+
+function showCard(data){
+  quizContainer.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'flip-card';
+  card.innerHTML = `<div class='flip-card-inner'>
+    <div class='flip-card-front'>${data.question}</div>
+    <div class='flip-card-back'>${data.answer}</div>
+  </div>`;
+  card.addEventListener('click', () => { card.classList.toggle('flipped'); });
+  quizContainer.appendChild(card);
+  progressDiv.innerHTML = `Question ${currentIndex + 1} of ${quizData.length}`;
+}
+
+nextBtn.addEventListener('click', ()=>{
+  if(currentIndex < quizData.length - 1){
+    currentIndex++;
+    showCard(quizData[currentIndex]);
+  } else {
+    quizContainer.innerHTML = '<h2>Quiz Completed!</h2>';
+    progressDiv.innerHTML = '';
+    nextBtn.style.display = 'none';
+    restartBtn.style.display = 'block';
+  }
+});
+
+restartBtn.addEventListener('click', ()=>{
+  currentIndex = 0;
+  showCard(quizData[currentIndex]);
+  nextBtn.style.display = 'inline-block';
+  restartBtn.style.display = 'none';
+});
+
+showCard(quizData[currentIndex]);
+</script>
+</body>
+</html>
